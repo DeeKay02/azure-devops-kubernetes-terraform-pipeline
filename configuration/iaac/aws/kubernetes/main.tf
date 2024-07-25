@@ -56,6 +56,11 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
+resource "time_sleep" "wait_for_kubernetes" {
+  depends_on = [module.deekay-cluster]
+  create_duration = "20s"
+}
+
 # We will use ServiceAccount to connect to K8S Cluster in CI/CD mode
 # ServiceAccount needs permissions to create deployments 
 # and services in default namespace
