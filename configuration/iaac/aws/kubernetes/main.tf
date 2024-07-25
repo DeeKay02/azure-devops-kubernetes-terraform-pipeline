@@ -15,14 +15,11 @@ resource "aws_default_vpc" "default" {
 
 }
 
-data "aws_subnet_ids" "subnets" {
-  vpc_id = aws_default_vpc.default.id
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+data "aws_subnets" "subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [aws_default_vpc.default.id]
+  }
 }
 
 module "deekay-cluster" {
@@ -30,8 +27,7 @@ module "deekay-cluster" {
   version = "~> 19.0"
   cluster_name    = "deekay-cluster"
   cluster_version = "1.27"
-  subnet_ids         = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
-  #subnets = data.aws_subnet_ids.subnets.ids
+  subnet_ids = data.aws_subnet_ids.subnets.ids
   vpc_id          = aws_default_vpc.default.id
 
   #vpc_id         = "vpc-0db0156491661a2ae"
@@ -52,6 +48,28 @@ data "aws_eks_cluster" "cluster" {
 
 data "aws_eks_cluster_auth" "cluster" {
   name = module.deekay-cluster.cluster_id
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+resource "kubernetes_cluster_role_binding" "example" {
+  metadata {
+    name = "fabric8-rbac"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "default"
+    namespace = "default"
+  }
 }
 
 
