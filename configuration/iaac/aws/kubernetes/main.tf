@@ -23,7 +23,6 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-  version                = "~> 2.12"
 }
 
 module "deekay-cluster" {
@@ -31,7 +30,7 @@ module "deekay-cluster" {
   version = "~> 19.0"
   cluster_name    = "deekay-cluster"
   cluster_version = "1.27"
-  subnets         = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
+  subnet_ids         = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
   #subnets = data.aws_subnet_ids.subnets.ids
   vpc_id          = aws_default_vpc.default.id
 
