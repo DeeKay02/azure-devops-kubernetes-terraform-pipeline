@@ -43,11 +43,11 @@ module "deekay-cluster" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.deekay-cluster.cluster_id
+  name = module.deekay-cluster.cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.deekay-cluster.cluster_id
+  name = module.deekay-cluster.cluster_name
 }
 
 provider "kubernetes" {
