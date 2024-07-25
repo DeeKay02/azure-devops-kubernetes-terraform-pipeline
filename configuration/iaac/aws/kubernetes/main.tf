@@ -27,7 +27,7 @@ module "deekay-cluster" {
   version = "~> 19.0"
   cluster_name    = "deekay-cluster"
   cluster_version = "1.27"
-  subnet_ids = data.aws_subnets.default.ids
+  subnet_ids = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
   vpc_id          = aws_default_vpc.default.id
 
   #vpc_id         = "vpc-0db0156491661a2ae"
