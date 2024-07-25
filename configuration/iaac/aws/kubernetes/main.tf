@@ -28,22 +28,23 @@ provider "kubernetes" {
 
 module "deekay-cluster" {
   source          = "terraform-aws-modules/eks/aws"
+  version = "~> 19.0"
   cluster_name    = "deekay-cluster"
-  cluster_version = "1.14"
+  cluster_version = "1.27"
   subnets         = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
   #subnets = data.aws_subnet_ids.subnets.ids
   vpc_id          = aws_default_vpc.default.id
 
   #vpc_id         = "vpc-0db0156491661a2ae"
 
-  node_groups = [
-    {
-      instance_type = "t2.micro"
-      max_capacity  = 5
-      desired_capacity = 3
-      min_capacity  = 3
+  eks_managed_node_groups = {
+    default = {
+      instance_types = ["t2.micro"]
+      min_size       = 3
+      max_size       = 5
+      desired_size   = 3
     }
-  ]
+  } 
 }
 
 data "aws_eks_cluster" "cluster" {
