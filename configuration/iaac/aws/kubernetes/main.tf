@@ -1,13 +1,13 @@
 # aws --version
-# aws eks --region us-east-2 update-kubeconfig --name deekay-cluster
+# aws eks --region us-east-1 update-kubeconfig --name deekay-cluster
 # Uses default VPC and Subnet. Create Your Own VPC and Private Subnets for Prod Usage.
-# terraform-backend-state-deekay-devops-practice
+# terraform-backend-state-deekay-devops
 
 terraform {
   backend "s3" {
     bucket = "mybucket" # Will be overridden from build
     key    = "path/to/my/key" # Will be overridden from build
-    region = "us-east-2"
+    region = "us-east-1"
   }
 }
 
@@ -30,11 +30,11 @@ module "deekay-cluster" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = "deekay-cluster"
   cluster_version = "1.14"
-  subnets         = ["subnet-08f896948f3eb7964", "subnet-0142e886a0ec305a5", "subnet-05c48f02ac9d9a945"]
+  subnets         = ["subnet-002cc171713102851", "subnet-02d5db863c8b0c7b3", "subnet-0c1b9b686392c122d"]
   #subnets = data.aws_subnet_ids.subnets.ids
   vpc_id          = aws_default_vpc.default.id
 
-  #vpc_id         = "vpc-01771d6c74d7ea7aa"
+  #vpc_id         = "vpc-0db0156491661a2ae"
 
   node_groups = [
     {
@@ -76,5 +76,5 @@ resource "kubernetes_cluster_role_binding" "example" {
 
 # Needed to set the default region
 provider "aws" {
-  region  = "us-east-2"
+  region  = "us-east-1"
 }
