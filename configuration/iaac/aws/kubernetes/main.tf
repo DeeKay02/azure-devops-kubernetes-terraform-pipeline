@@ -9,6 +9,13 @@ terraform {
     key    = "path/to/my/key" # Will be overridden from build
     region = "us-east-1"
   }
+
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+  }
 }
 
 resource "aws_default_vpc" "default" {
