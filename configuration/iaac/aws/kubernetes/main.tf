@@ -54,11 +54,14 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.cluster.token
+
+  config_path = "~/.kube/config"
+  config_context = "deekay-cluster"
 }
 
 resource "time_sleep" "wait_for_kubernetes" {
   depends_on = [module.deekay-cluster]
-  create_duration = "20s"
+  create_duration = "120s"
 }
 
 # We will use ServiceAccount to connect to K8S Cluster in CI/CD mode
